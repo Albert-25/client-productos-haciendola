@@ -30,7 +30,7 @@ export const addProduct = createAsyncThunk(
           Authorization: `Bearer ${token}`
         }
       });
-      return {...response.data, isJustCreated: true };
+      return { ...response.data, isJustCreated: true };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -40,10 +40,16 @@ export const addProduct = createAsyncThunk(
 export const editProduct = createAsyncThunk(
   'products/editProduct',
   async ({ productId, updatedProductData }, { getState, rejectWithValue }) => {
+
+    const productToUpdate = {
+      ...updatedProductData,
+      isJustCreated: undefined
+    }
+    
     try {
       const token = getState().auth.token;
 
-      const response = await axios.put(`http://localhost:3000/products/${productId}`, updatedProductData, {
+      const response = await axios.put(`http://localhost:3000/products/${productId}`, productToUpdate, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -66,7 +72,7 @@ export const deleteProduct = createAsyncThunk(
           Authorization: `Bearer ${token}`
         }
       });
-      
+
       return productId;
     } catch (error) {
       return rejectWithValue(error.response.data);

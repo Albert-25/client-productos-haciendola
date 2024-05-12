@@ -16,7 +16,11 @@ const EditProductForm = ({ product, open, onClose }) => {
     };
 
     const handleEditProduct = () => {
-        dispatch(editProduct({ productId: editedProduct.id, updatedProductData: editedProduct }));
+
+        const handle = editedProduct.title.toLowerCase().replace(/\s+/g, '-');
+        const productToEdit = { ...editedProduct, handle };
+
+        dispatch(editProduct({ productId: editedProduct.id, updatedProductData: productToEdit }));
         onClose();
     };
 

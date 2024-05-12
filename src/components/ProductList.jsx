@@ -100,7 +100,7 @@ const ProductList = () => {
       ) : (
         <Grid item xs={12} sx={{ textAlign: 'center' }}>
           <Typography variant="body1" color="textSecondary">
-            {filter === 'justCreated' ? 'Aquí aparecerán los productos recién agregados' : 'No se encontraron productos'}
+            {filter === 'justCreated' ? 'Aquí aparecerán los productos recién agregados sin ser editados' : 'No se encontraron productos'}
           </Typography>
         </Grid>
       )}
