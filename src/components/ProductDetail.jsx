@@ -19,13 +19,13 @@ const ProductDetail = ({ product, openModal, handleCloseModal }) => {
                     Precio: ${product.price}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
+                    Precio comparado: ${product.comparePrice}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
                     Gramos: {product.grams}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    Precio comparado: {product.comparePrice}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Codigo de barra: ${product.barcode}
+                    Codigo de barra: {product.barcode}
                 </Typography>
             </DialogContent>
             <DialogActions>
