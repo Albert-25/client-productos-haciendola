@@ -7,7 +7,7 @@ export const fetchProducts = createAsyncThunk(
     try {
       const token = getState().auth.token;
 
-      const response = await axios.get('http://localhost:3000/products', {
+      const response = await axios.get('http://localhost:3001/products', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -25,7 +25,7 @@ export const addProduct = createAsyncThunk(
     try {
       const token = getState().auth.token;
 
-      const response = await axios.post('http://localhost:3000/products', productData, {
+      const response = await axios.post('http://localhost:3001/products', productData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -49,7 +49,7 @@ export const editProduct = createAsyncThunk(
     try {
       const token = getState().auth.token;
 
-      const response = await axios.put(`http://localhost:3000/products/${productId}`, productToUpdate, {
+      const response = await axios.put(`http://localhost:3001/products/${productId}`, productToUpdate, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -67,7 +67,7 @@ export const deleteProduct = createAsyncThunk(
     try {
       const token = getState().auth.token;
 
-      await axios.delete(`http://localhost:3000/products/${productId}`, {
+      await axios.delete(`http://localhost:3001/products/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
