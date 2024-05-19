@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Grid, IconButton, Tooltip, Typography, MenuItem, Select, CircularProgress } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { logout } from '../redux/actions/authActions';
 import { fetchProducts } from '../redux/actions/productActions';
 import { fetchLoggedInUser } from '../redux/actions/userActions';
@@ -11,6 +12,7 @@ import Pagination from '@mui/material/Pagination';
 import Box from '@mui/material/Box';
 import ProductItem from './ProductItem';
 import AddProductForm from '../forms/AddProductForm';
+import ChangePasswordForm from '../forms/ChangePasswordForm';
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -19,7 +21,8 @@ const ProductList = () => {
   const { userName } = useSelector((state) => state.user.userInfo);
   const [page, setPage] = useState(1);
   const [perPage] = useState(9);
-  const [openForm, setOpenForm] = useState(false);
+  const [openAddingProductForm, setOpenAddingProductForm] = useState(false);
+  const [openChangePassword, setOpenChangePassword] = useState(false);
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
@@ -57,11 +60,19 @@ const ProductList = () => {
   const paginatedProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
   const handleOpenForm = () => {
-    setOpenForm(true);
+    setOpenAddingProductForm(true);
   };
 
   const handleCloseForm = () => {
-    setOpenForm(false);
+    setOpenAddingProductForm(false);
+  };
+
+  const handleOpenChangePassword = () => {
+    setOpenChangePassword(true);
+  };
+
+  const handleCloseChangePassword = () => {
+    setOpenChangePassword(false);
   };
 
   return (
@@ -88,8 +99,13 @@ const ProductList = () => {
             <ExitToAppIcon />
           </IconButton>
         </Tooltip>
+        <Tooltip title="Cambiar Contraseña" arrow>
+          <IconButton aria-label="ChangePassword" onClick={handleOpenChangePassword} sx={{ position: 'absolute', top: '10px', right: '60px' }}>
+            <LockOutlinedIcon />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Agregar Producto" arrow>
-          <IconButton aria-label="AddProduct" onClick={handleOpenForm} sx={{ position: 'absolute', top: '10px', right: '60px' }}>
+          <IconButton aria-label="AddProduct" onClick={handleOpenForm} sx={{ position: 'absolute', top: '10px', right: '110px' }}>
             <AddIcon />
           </IconButton>
         </Tooltip>
@@ -97,7 +113,7 @@ const ProductList = () => {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           displayEmpty
-          sx={{ position: 'absolute', top: '10px', right: '110px' }}
+          sx={{ position: 'absolute', top: '10px', right: '160px' }}
         >
           <MenuItem value="all">Todos los productos</MenuItem>
           <MenuItem value="justCreated">Productos recién creados</MenuItem>
@@ -116,7 +132,8 @@ const ProductList = () => {
           </Grid>
         )
       )}
-      <AddProductForm open={openForm} handleClose={handleCloseForm} />
+      <AddProductForm open={openAddingProductForm} handleClose={handleCloseForm} />
+      <ChangePasswordForm open={openChangePassword} handleClose={handleCloseChangePassword} />
     </Grid>
   );
 };

@@ -30,3 +30,26 @@ export const fetchLoggedInUser = createAsyncThunk(
     }
   }
 );
+
+export const changeUserPassword = createAsyncThunk(
+  'users/changePassword',
+  async ({ currentPassword, newPassword }, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const id = getState().user.userInfo.id;
+
+      const res = await axios.put(
+        `http://localhost:3001/users/change-password/${id}`,
+        { currentPassword, newPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);

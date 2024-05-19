@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { registerUser, fetchLoggedInUser } from '../actions/userActions';
+import { registerUser, fetchLoggedInUser, changeUserPassword } from '../actions/userActions';
 
 const initialState = {
   loading: false,
   userInfo: {
+    id: 0,
     userName: '',
-    email: ''
+    email: '',
   }
 };
 
@@ -34,8 +35,17 @@ const userSlice = createSlice({
       })
       .addCase(fetchLoggedInUser.rejected, (state, action) => {
         state.loading = false;
+      })
+      .addCase(changeUserPassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(changeUserPassword.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(changeUserPassword.rejected, (state, action) => {
+        state.loading = false;
       });
   },
 });
 
-export default userSlice.reducer
+export default userSlice.reducer;
