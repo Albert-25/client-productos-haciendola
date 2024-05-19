@@ -12,7 +12,7 @@ Además les permite la opcion de cambiar su contraseña
 
 1. **Clonar el repositorio:**
 
-Ejecutar: git clone https://github.com/Albert-25/client-productos-haciendola.git
+- Ejecutar: git clone https://github.com/Albert-25/client-productos-haciendola.git
 
 2. **Instalar dependencias:**
 - Asegúrate de tener Node.js instalado en tu sistema.
