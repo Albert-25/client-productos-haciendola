@@ -15,7 +15,7 @@ Además les permite la opcion de cambiar su contraseña
 - Ejecutar: git clone https://github.com/Albert-25/client-productos-haciendola.git
 
 2. **Instalar dependencias:**
-- Asegúrate de tener Node.js instalado en tu sistema.
+- Asegúrate de tener Node.js instalado en tu sistema y usar la version indicada en el archivo .nvmrc
 - En la raíz del proyecto, ejecuta el siguiente comando para instalar las dependencias: npm install
 
 
