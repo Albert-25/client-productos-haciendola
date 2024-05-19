@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditProductForm from '../forms/EditProductForm';
 import ProductDetail from './ProductDetail';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct } from '../redux/actions/productActions';
+import { toast } from 'react-toastify';
 
 const ProductItem = ({ product }) => {
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const dispatch = useDispatch();
+  const { loading } = useSelector(state => state.product);
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -29,10 +31,24 @@ const ProductItem = ({ product }) => {
     setOpenEditModal(false);
   };
 
-  const handleDeleteProduct = (id) => {
-    dispatch(deleteProduct(id));
+  const handleDeleteProduct = async (id) => {
+    try {
+      await dispatch(deleteProduct(id)).unwrap();
+      toast.success('Producto eliminado con éxito');
+    } catch (error) {
+      if (Array.isArray(error.message)) {
+        error.message.forEach(errorMessage => {
+          toast.error(`${errorMessage}`);
+        });
+
+        return;
+      }
+
+      toast.error(`${error.message}`);
+    }
     setConfirmDelete(false);
-  }
+  };
+
 
   const truncateTitle = (title, maxLength) => {
     return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
@@ -90,7 +106,9 @@ const ProductItem = ({ product }) => {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setConfirmDelete(false)} color="primary">Cancelar</Button>
-              <Button onClick={() => handleDeleteProduct(product.id)} color="primary">Eliminar</Button>
+              <Button onClick={() => handleDeleteProduct(product.id)} color="primary" disabled={loading}>
+                {loading ? 'Eliminando...' : 'Eliminar'}
+              </Button>
             </DialogActions>
           </Dialog>
 

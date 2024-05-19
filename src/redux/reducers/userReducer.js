@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { registerUser } from '../actions/userActions';
+import { registerUser, fetchLoggedInUser } from '../actions/userActions';
 
 const initialState = {
   loading: false,
-  error: null,
-  user: null,
+  userInfo: {
+    userName: '',
+    email: ''
+  }
 };
 
 const userSlice = createSlice({
@@ -17,13 +19,21 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state) => {
         state.loading = false;
-        state.user = action.payload;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+      })
+      .addCase(fetchLoggedInUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchLoggedInUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userInfo = action.payload;
+      })
+      .addCase(fetchLoggedInUser.rejected, (state, action) => {
+        state.loading = false;
       });
   },
 });

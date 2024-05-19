@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/actions/authActions';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, TextField, Container, Typography } from '@mui/material';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -18,15 +19,28 @@ const Login = () => {
 
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleLogin = () => {
-    dispatch(login({ userNameOrEmail, password }));
+  const handleLogin = async () => {
+    try {
+      await dispatch(login({ userNameOrEmail, password })).unwrap();
+    } catch (error) {
+
+      if (Array.isArray(error.message)) {
+        error.message.forEach(errorMessage => {
+          toast.error(`${errorMessage}`);
+        });
+
+        return;
+      }
+
+      toast.error(`${error.message}`);
+    }
   };
 
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/products');
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, navigate]);
 
   return (
     <Container maxWidth="xs">

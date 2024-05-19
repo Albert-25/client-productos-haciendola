@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchProducts, addProduct, editProduct, deleteProduct } from '../actions/productActions'; // Importa la acción deleteProduct
+import { fetchProducts, addProduct, editProduct, deleteProduct } from '../actions/productActions';
 
 const initialState = {
   products: [],
   loading: false,
-  error: null,
 };
 
 const productSlice = createSlice({
@@ -15,7 +14,6 @@ const productSlice = createSlice({
     builder
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
@@ -23,11 +21,9 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
       })
       .addCase(addProduct.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.loading = false;
@@ -35,11 +31,9 @@ const productSlice = createSlice({
       })
       .addCase(addProduct.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
       })
       .addCase(editProduct.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(editProduct.fulfilled, (state, action) => {
         state.loading = false;
@@ -50,11 +44,9 @@ const productSlice = createSlice({
       })
       .addCase(editProduct.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
       })
       .addCase(deleteProduct.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.loading = false;
@@ -62,7 +54,6 @@ const productSlice = createSlice({
       })
       .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
       });
   },
 });

@@ -1,24 +1,29 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import store from './redux/stored';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Login from './components/Login';
 import ProductList from './components/ProductList';
 import Signup from './components/Signup';
 
 const App = () => {
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+
   return (
-    <Provider store={store}>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/products" element={<ProductList />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<Login />} />
-        </Routes>
-      </Router>
-    </Provider>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route
+          path="*"
+          element={isAuthenticated ? <Navigate to="/products" /> : <Navigate to="/login" />}
+        />
+      </Routes>
+      <ToastContainer />
+    </Router>
   );
 };
 

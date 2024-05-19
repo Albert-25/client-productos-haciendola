@@ -1,18 +1,37 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux'; 
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, TextField, Container, Typography } from '@mui/material';
 import { registerUser } from '../redux/actions/userActions';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [userName, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignup = () => {
-    dispatch(registerUser({ userName, email, password }));
+  const { loading } = useSelector(state => state.user);
+
+  const handleSignup = async () => {
+    try {
+      await dispatch(registerUser({ userName, email, password })).unwrap();
+      toast.success('¡Registro exitoso!');
+      navigate('/login');
+    } catch (error) {
+
+      if (Array.isArray(error.message)) {
+        error.message.forEach(errorMessage => {
+          toast.error(`${errorMessage}`);
+        });
+
+        return;
+      }
+
+      toast.error(`${error.message}`);
+    }
   };
 
   return (
@@ -46,8 +65,8 @@ const Signup = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <Button variant="contained" color="primary" fullWidth onClick={handleSignup}>
-        Registrarse
+      <Button variant="contained" color="primary" fullWidth onClick={handleSignup} disabled={loading}>
+        {loading ? 'Registrando...' : 'Registrarse'}
       </Button>
       <Typography align="center" gutterBottom>
         ¿Ya tienes una cuenta? <Link to="/login">Inicia Sesión</Link>

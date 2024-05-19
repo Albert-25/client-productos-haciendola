@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addProduct } from '../redux/actions/productActions';
+import { toast } from 'react-toastify';
 
 const AddProductForm = ({ open, handleClose }) => {
     const dispatch = useDispatch();
+    const { loading } = useSelector(state => state.product);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -17,14 +19,44 @@ const AddProductForm = ({ open, handleClose }) => {
     });
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        if ((name === 'price' || name === 'stock' || name === 'grams' || name === 'comparePrice') && isNaN(value)) {
+            return;
+        }
+        setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const handle = formData.title.toLowerCase().replace(/\s+/g, '-');
         const productToAdd = { ...formData, handle };
-        dispatch(addProduct(productToAdd));
-        handleClose();
+
+        try {
+            await dispatch(addProduct(productToAdd)).unwrap();
+            toast.success('Producto registrado con éxito');
+            handleClose();
+            setFormData({
+                title: '',
+                description: '',
+                sku: '',
+                grams: '',
+                stock: '',
+                price: '',
+                comparePrice: '',
+                barcode: ''
+            })
+            
+        } catch (error) {
+            if (Array.isArray(error.message)) {
+                error.message.forEach(errorMessage => {
+                    toast.error(`${errorMessage}`);
+                });
+
+                return;
+            }
+
+            toast.error(`${error.message}`);
+        }
     };
 
     return (
@@ -42,7 +74,9 @@ const AddProductForm = ({ open, handleClose }) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancelar</Button>
-                <Button onClick={handleSubmit} variant="contained" color="primary">Guardar</Button>
+                <Button onClick={handleSubmit} variant="contained" color="primary" disabled={loading}>
+                    {loading ? 'Guardando...' : 'Guardar'}
+                </Button>
             </DialogActions>
         </Dialog>
     );

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { editProduct } from '../redux/actions/productActions';
+import { toast } from 'react-toastify';
 
 const EditProductForm = ({ product, open, onClose }) => {
     const dispatch = useDispatch();
+    const { loading } = useSelector(state => state.product);
     const [editedProduct, setEditedProduct] = useState(product);
 
     const handleInputChange = (e) => {
@@ -15,13 +17,25 @@ const EditProductForm = ({ product, open, onClose }) => {
         });
     };
 
-    const handleEditProduct = () => {
-
+    const handleEditProduct = async () => {
         const handle = editedProduct.title.toLowerCase().replace(/\s+/g, '-');
         const productToEdit = { ...editedProduct, handle };
 
-        dispatch(editProduct({ productId: editedProduct.id, updatedProductData: productToEdit }));
-        onClose();
+        try {
+            await dispatch(editProduct({ productId: editedProduct.id, updatedProductData: productToEdit })).unwrap();
+            toast.success('Producto actualizado con éxito');
+            onClose();
+        } catch (error) {
+            if (Array.isArray(error.message)) {
+                error.message.forEach(errorMessage => {
+                    toast.error(`${errorMessage}`);
+                });
+
+                return;
+            }
+
+            toast.error(`${error.message}`);
+        }
     };
 
     return (
@@ -106,8 +120,8 @@ const EditProductForm = ({ product, open, onClose }) => {
                 <Button onClick={onClose} color="primary">
                     Cancelar
                 </Button>
-                <Button onClick={handleEditProduct} color="primary">
-                    Guardar
+                <Button onClick={handleEditProduct} color="primary" disabled={loading}>
+                    {loading ? 'Guardando...' : 'Guardar'}
                 </Button>
             </DialogActions>
         </Dialog>

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { Grid, IconButton, Tooltip, Typography, MenuItem, Select } from '@mui/material';
+import { Grid, IconButton, Tooltip, Typography, MenuItem, Select, CircularProgress } from '@mui/material';
 import { logout } from '../redux/actions/authActions';
-import { fetchProducts, addProduct } from '../redux/actions/productActions';
+import { fetchProducts } from '../redux/actions/productActions';
+import { fetchLoggedInUser } from '../redux/actions/userActions';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AddIcon from '@mui/icons-material/Add';
 import Pagination from '@mui/material/Pagination';
@@ -14,11 +15,16 @@ import AddProductForm from '../forms/AddProductForm';
 const ProductList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const products = useSelector((state) => state.product.products);
+  const { products, loading } = useSelector((state) => state.product);
+  const { userName } = useSelector((state) => state.user.userInfo);
   const [page, setPage] = useState(1);
   const [perPage] = useState(9);
   const [openForm, setOpenForm] = useState(false);
   const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    dispatch(fetchLoggedInUser());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -35,7 +41,7 @@ const ProductList = () => {
   };
 
   const handleLogout = async () => {
-    await dispatch(logout());
+    await dispatch(logout()).unwrap();
     navigate('/login');
   };
 
@@ -62,14 +68,18 @@ const ProductList = () => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="h4" align="center" gutterBottom>
-          Productos
+          {`Bienvenid@ ${userName}`}
         </Typography>
       </Grid>
       <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {filteredProducts.length > 0 && (
-          <Box mt={2}>
-            <Pagination count={pageCount} page={page} onChange={handlePageChange} color="primary" />
-          </Box>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          filteredProducts.length > 0 && (
+            <Box mt={2}>
+              <Pagination count={pageCount} page={page} onChange={handlePageChange} color="primary" />
+            </Box>
+          )
         )}
       </Grid>
       <Grid item xs={12}>
@@ -93,16 +103,18 @@ const ProductList = () => {
           <MenuItem value="justCreated">Productos recién creados</MenuItem>
         </Select>
       </Grid>
-      {paginatedProducts.length > 0 ? (
+      {!loading && paginatedProducts.length > 0 ? (
         paginatedProducts.map((product) => (
           <ProductItem key={product.id} product={product} />
         ))
       ) : (
-        <Grid item xs={12} sx={{ textAlign: 'center' }}>
-          <Typography variant="body1" color="textSecondary">
-            {filter === 'justCreated' ? 'Aquí aparecerán los productos recién agregados sin ser editados' : 'No se encontraron productos'}
-          </Typography>
-        </Grid>
+        !loading && (
+          <Grid item xs={12} sx={{ textAlign: 'center' }}>
+            <Typography variant="body1" color="textSecondary">
+              {filter === 'justCreated' ? 'Aquí aparecerán los productos recién agregados sin ser editados' : 'No se encontraron productos'}
+            </Typography>
+          </Grid>
+        )
       )}
       <AddProductForm open={openForm} handleClose={handleCloseForm} />
     </Grid>
