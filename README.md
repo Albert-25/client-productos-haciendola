@@ -14,12 +14,22 @@ Además les permite la opcion de cambiar su contraseña
 
 - Ejecutar: git clone https://github.com/Albert-25/client-productos-haciendola.git
 
-2. **Instalar dependencias:**
+2. **Agregar un archivo .env en la raiz del proyecto**
+   
+   - El archivo .env debe contener la siguiente y unica variable:
+
+    ```
+    REACT_APP_API_URL=http://localhost:3001
+    ```
+
+    se recomienda dejar el valor por defecto en el archivo .env.example ya que la api se levanta en ese puerto
+
+3. **Instalar dependencias:**
 - Asegúrate de tener Node.js instalado en tu sistema y usar la version indicada en el archivo .nvmrc
 - En la raíz del proyecto, ejecuta el siguiente comando para instalar las dependencias: npm install
 
 
-3. **Iniciar la aplicación:**
+4. **Iniciar la aplicación:**
 - Una vez que se hayan instalado las dependencias, puedes iniciar la aplicación ejecutando: npm start
 
 La aplicación se abrirá automáticamente en tu navegador en [http://localhost:3000](http://localhost:3000).
