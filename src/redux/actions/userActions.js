@@ -1,9 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import config from "../../utils/apiConfig";
+
+const { apiUrl } = config;
 
 export const registerUser = createAsyncThunk('users/register', async (userData, { rejectWithValue }) => {
   try {
-    const res = await axios.post('http://localhost:3001/users', userData);
+    const res = await axios.post(`${apiUrl}/users`, userData);
     return res.data;
   } catch (err) {
     return rejectWithValue(err.response.data);
@@ -18,7 +21,7 @@ export const fetchLoggedInUser = createAsyncThunk(
 
       const token = getState().auth.token;
 
-      const res = await axios.get('http://localhost:3001/users/me', {
+      const res = await axios.get(`${apiUrl}/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -39,7 +42,7 @@ export const changeUserPassword = createAsyncThunk(
       const id = getState().user.userInfo.id;
 
       const res = await axios.put(
-        `http://localhost:3001/users/change-password/${id}`,
+        `${apiUrl}/users/change-password/${id}`,
         { currentPassword, newPassword },
         {
           headers: {

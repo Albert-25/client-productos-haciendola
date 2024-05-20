@@ -1,5 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import config from "../../utils/apiConfig";
+
+const { apiUrl } = config;
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
@@ -7,7 +10,7 @@ export const fetchProducts = createAsyncThunk(
     try {
       const token = getState().auth.token;
 
-      const response = await axios.get('http://localhost:3001/products', {
+      const response = await axios.get(`${apiUrl}/products`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -25,7 +28,7 @@ export const addProduct = createAsyncThunk(
     try {
       const token = getState().auth.token;
 
-      const response = await axios.post('http://localhost:3001/products', productData, {
+      const response = await axios.post(`${apiUrl}/products`, productData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -49,7 +52,7 @@ export const editProduct = createAsyncThunk(
     try {
       const token = getState().auth.token;
 
-      const response = await axios.put(`http://localhost:3001/products/${productId}`, productToUpdate, {
+      const response = await axios.put(`${apiUrl}/products/${productId}`, productToUpdate, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -67,7 +70,7 @@ export const deleteProduct = createAsyncThunk(
     try {
       const token = getState().auth.token;
 
-      await axios.delete(`http://localhost:3001/products/${productId}`, {
+      await axios.delete(`${apiUrl}/products/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
